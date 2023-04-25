@@ -973,6 +973,20 @@ if Code.ensure_loaded?(Postgrex) do
           false -> " NULLS NOT DISTINCT"
         end
 
+      maybe_sort =
+        case index.sort do
+          nil -> []
+          :asc -> " ASC"
+          :desc -> " DESC"
+        end
+
+      maybe_nulls_sort =
+        case index.nulls_sort do
+          nil -> []
+          :first -> " NULLS FIRST"
+          :last -> " NULLS LAST"
+        end
+
       queries = [["CREATE ",
                   if_do(index.unique, "UNIQUE "),
                   "INDEX ",
@@ -983,7 +997,7 @@ if Code.ensure_loaded?(Postgrex) do
                   if_do(index.only, "ONLY "),
                   quote_table(index.prefix, index.table),
                   if_do(index.using, [" USING " , to_string(index.using)]),
-                  ?\s, ?(, fields, ?),
+                  ?\s, ?(, fields, maybe_sort, maybe_nulls_sort, ?),
                   if_do(include_fields != [], [" INCLUDE ", ?(, include_fields, ?)]),
                   maybe_nulls_distinct,
                   if_do(index.where, [" WHERE ", to_string(index.where)])]]

@@ -370,6 +370,10 @@ defmodule Ecto.Migration do
               nulls_distinct: nil,
               where: nil,
               comment: nil,
+              # TODO oh this is wrong because it has to be per column
+              #https://www.postgresql.org/docs/current/sql-createindex.html
+              sort: nil,
+              nulls_sort: nil,
               options: nil
 
     @type t :: %__MODULE__{
@@ -385,6 +389,8 @@ defmodule Ecto.Migration do
       nulls_distinct: boolean | nil,
       where: atom | String.t,
       comment: String.t | nil,
+      sort: :asc | :desc | nil,
+      nulls_sort: :first | :last | nil,
       options: String.t
     }
   end
