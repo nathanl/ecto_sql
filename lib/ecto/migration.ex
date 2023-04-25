@@ -832,6 +832,9 @@ defmodule Ecto.Migration do
       # Covering indexes are created by specifying a :include option
       create index("products", [:user_id], include: [:category_id])
 
+      # Indexes can include sort options per column.
+      create index("products", [user_id: [:desc, :nulls_first]], include: [:category_id])
+
   Indexes also support custom expressions. Some databases may require the
   index expression to be written between parentheses:
 
